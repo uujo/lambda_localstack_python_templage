@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4568-4576:4568-4576"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SERVICES=dynamodb, sqs, s3
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /private${TMPDIR}:/tmp/localstack
+    networks:
+      - local_aws_network
+
+  aws-cli:
+    image: mesosphere/aws-cli
+    volumes:
+      - ./dev_env:/project/dev_env
+    environment:
+      - AWS_ACCESS_KEY_ID=1234
+      - AWS_SECRET_ACCESS_KEY=1234
+      - AWS_DEFAULT_REGION=us-east-1
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        # Sleep is needed so all localstack components will startup correctly  (There's a better way to do this)
+        sleep 10;
+
+        # Initialize S3 in localstack
+        aws s3api create-bucket --endpoint-url=http://localstack:4572 \
+                    --bucket VARSAP_BUCKET;
+
+        # Initialize dynamodb in localstack
+        aws dynamodb create-table --endpoint-url=http://localstack:4569 \
+            --table-name ANNOTATION_TABLE \
+            --attribute-definitions \
+                AttributeName=job_id,AttributeType=S \
+                AttributeName=updated,AttributeType=N \
+            --key-schema \
+                AttributeName=job_id,KeyType=HASH \
+            --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+            --global-secondary-indexes \
+                IndexName=SourceIndex,KeySchema=[{AttributeName=updated,KeyType=HASH}],Projection={ProjectionType=KEYS_ONLY},ProvisionedThroughput={ReadCapacityUnits=5,WriteCapacityUnits=5};
+
+        # Initialize sqs in localstack
+        aws sqs create-queue --endpoint-url=http://localstack:4576 --queue-name ANNOTATION_QUEUE;
+        # you can run more command here
+      "
+    networks:
+      - local_aws_network
+    depends_on:
+      - localstack
+
+networks:
+  local_aws_network:
