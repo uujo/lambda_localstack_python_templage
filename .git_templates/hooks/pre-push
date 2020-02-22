@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# An hook script to verify what is about to pushed to remote repository.
+# Called by "git push" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the push.
+# Coverage threshold rate is set to 95%
+
+# run the unittests if it fails abort the push
+echo "pre-push: Run unittest"
+coverage run --source=projectname -m pytest tests/unittests/
+
+# Above command doesn't exit when unittests fails
+# It needs to be caught and exit non 0 to abort the push
+if [ $? -ne 0 ]; then
+    echo 'Unittest failed, aborting push'
+    exit 1
+fi
+
+# Run coverage, fail if it is under 95 %
+echo "pre-push: coverage, fail if it is under 95%"
+coverage report --fail-under=95
