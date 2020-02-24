@@ -9,7 +9,7 @@ Template for lambda  with localstack and sam integration for localtest
 
 * [AWS SAM client](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html#serverless-sam-cli-install-mac-pip) (pip3 install --user aws-sam-cli)
   
-   * [Adjust path to use sam cli command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac-path.html)
+   * Reference: [Adjust path to use sam cli command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac-path.html)
 
 * [Docker](https://docs.docker.com/docker-for-mac/install/) - need for the local lambda function testing
 
