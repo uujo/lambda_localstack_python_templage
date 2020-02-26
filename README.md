@@ -17,7 +17,7 @@ Template for lambda  with localstack and sam integration for localtest
  
   `git clone https://github.com/uujo/lambda_localstack_template.git`
   
-  `cd lambda_localstack_python_template`
+  `cd lambda_localstack_template`
   
 
 ## Set up git hooks (pre-commit, pre-push) - This is one time setting. Doesn't have to be repeated every time. 
@@ -41,9 +41,9 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
 
 ## Local test set up using aws sam and localstack (with python3 venv) 
  
-* set the virtual environment (optional, you can use other virtual env tools or without it)
+* set the virtual environment (optional, you can use other virtual env tools or without it) 
   
-  `cd lambda_localstack_python_template`
+  `cd lambda_localstack_template`
   
   `python3 -m venv .venv`
   
