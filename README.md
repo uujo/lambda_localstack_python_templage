@@ -49,12 +49,13 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
   `source .venv/bin/activate`  - activate virtual environment
   
-  `pip install -r requirements.txt` - one time setting (If this command fails with __xcun__ error, run __xcode-select --install__
+  `pip install -r requirements.txt` - one time setting 
+     (If install fails with __xcun__ error, run __xcode-select --install__)
   
  
 * To start local test setup
 
-  `bin/start_local_test`   
+  `bin/start_local_test_template.sh`   
   
   _-i_ option sets interactive mode on localstack instead of running it background, if you want to monitor localstack log use this option. Without this option, it automatically create the sample data in S3 bucket.
 
