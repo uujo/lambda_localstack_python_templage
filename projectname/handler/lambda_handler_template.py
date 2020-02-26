@@ -34,12 +34,7 @@ def insert_to_dynamo(key, data):
     dynamo = boto3.resource("dynamodb", endpoint_url=dynamo_endpoint)
     dynamo_table = dynamo.Table(dynamo_table_name)
 
-    item = {
-        "key_id": key,
-        "data": data,
-        "created": int(time.time()),
-        "updated": int(time.time()),
-    }
+    item = {"key_id": key, "data": data, "created": int(time.time()), "updated": int(time.time())}
     result = dynamo_table.put_item(Item=item)
     return result
 
