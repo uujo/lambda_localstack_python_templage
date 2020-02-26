@@ -70,18 +70,18 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
   * put data in S3
   
-    `aws s3api put-object --endpoint-url=http://localhost:4572  --bucket VARSAP_BUCKET --key annotation/g-snv-7-7578212-G-A/data.json --body tests/s3_test_data.json`
+    `aws s3api put-object --endpoint-url=http://localhost:4572  --bucket TEST_BUCKET --key test_path/data.json --body tests/s3_test_data.json`
 
   * To check S3 object is created
 
-    `aws s3api list-objects --bucket=VARSAP_BUCKET --endpoint-url=http://localhost:4572` 
+    `aws s3api list-objects --bucket=TEST_BUCKET --endpoint-url=http://localhost:4572` 
   
   
-* To test annotation lambdas
+* To test lambdas
 
   * invoke S3 ObjectCreated event
   
-    `sam local invoke HandleS3Event -t build/template.yaml --docker-network [repository_name]_local_aws_network -e tests/s3_test_event.json`
+    `sam local invoke HandleS3Event -t build/template.yaml --docker-network lambda_localstack_python_templage_local_aws_network -e tests/s3_test_event.json`
   
   * To check whether table has an entry inserted.
 
@@ -93,7 +93,7 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
   * invoke SQS event
   
-    `sam local invoke RequestAnnotation -t build/template.yaml --docker-network [repository_name]_local_aws_network -e tests/sqs_test_event.json`
+    `sam local invoke RequestAnnotation -t build/template.yaml --docker-network lambda_localstack_python_templage_local_aws_network -e tests/sqs_test_event.json`
     
   * check S3 Object is updated: (Might take a while to update annotations) - It will store object in _s3_test_out.json_
    
