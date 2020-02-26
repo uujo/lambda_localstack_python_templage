@@ -32,22 +32,22 @@ services:
 
         # Initialize S3 in localstack
         aws s3api create-bucket --endpoint-url=http://localstack:4572 \
-                    --bucket VARSAP_BUCKET;
+                    --bucket TEST_BUCKET;
 
         # Initialize dynamodb in localstack
         aws dynamodb create-table --endpoint-url=http://localstack:4569 \
-            --table-name ANNOTATION_TABLE \
+            --table-name TEST_TABLE \
             --attribute-definitions \
-                AttributeName=job_id,AttributeType=S \
+                AttributeName=key_id,AttributeType=S \
                 AttributeName=updated,AttributeType=N \
             --key-schema \
-                AttributeName=job_id,KeyType=HASH \
+                AttributeName=key_id,KeyType=HASH \
             --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
             --global-secondary-indexes \
                 IndexName=SourceIndex,KeySchema=[{AttributeName=updated,KeyType=HASH}],Projection={ProjectionType=KEYS_ONLY},ProvisionedThroughput={ReadCapacityUnits=5,WriteCapacityUnits=5};
 
         # Initialize sqs in localstack
-        aws sqs create-queue --endpoint-url=http://localstack:4576 --queue-name ANNOTATION_QUEUE;
+        aws sqs create-queue --endpoint-url=http://localstack:4576 --queue-name TEST_QUEUE;
         # you can run more command here
       "
     networks:
