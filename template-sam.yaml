@@ -8,17 +8,10 @@ Globals:
     Environment:
       Variables:
         # Set localtest env
-        TEST_ENV: LOCAL_TEST
         # Set environment variable so amazon service can be switched in local settings
         # This has to be matched with localstack config in docker-compose.yaml
         # Current example contains DynamoDB and S3
-        ANNOTATION_TABLE: ANNOTATION_TABLE
-        LOCAL_DYNAMODB: http://localstack:4569
-        BUCKET_NAME: VARSAP_BUCKET
-        LOCAL_S3_ENDPOINT: http://localstack:4572
-        ANNOTATION_QUEUE: ANNOTATION_QUEUE
-        LOCAL_SQS_ENDPOINT: http://localstack:4576
-        LOG_LEVEL: DEBUG
+        TEST_ENV: LOCAL     
 
 Resources:
   RequestAnnotation:

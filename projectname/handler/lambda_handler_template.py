@@ -4,36 +4,35 @@ then read the data from S3 then insert data to dynamodb
 It is just a sample. It doesn't include proper error handling codes
 
 """
-import os
 import json
 import logging
-import boto3
 import time
 
+import boto3
 
-def get_s3_data(bucket_name, key):
+from ..awshelper.awsenv import dynamo_endpoint, s3_endpoint, dynamo_table_name, s3_bucket_name
+
+
+def get_s3_data(key):
     """
     getting s3 data
     """
-    endpoint_url = os.environ.get("LOCAL_S3_ENDPOINT")
-    s3 = boto3.resource("s3", endpoint_url=endpoint_url)
-    s3_obj = s3.Object(bucket_name, key=key)
+    s3 = boto3.resource("s3", endpoint_url=s3_endpoint)
+    s3_obj = s3.Object(s3_bucket_name, key=key)
     data = s3_obj.get(ResponseContentType="application/json")
     body = json.loads(data["Body"].read())
     return body
 
 
-def inset_to_dynamo(key, data):
+def insert_to_dynamo(key, data):
     """
     insert data to dynamodb
     :param key:
     :param data:
     :return:
     """
-    endpoint_url = os.environ.get("LOCAL_DYNAMODB")
-    dynamo = boto3.resource("dynamodb", endpoint_url=endpoint_url)
-    table_name = os.environ.get("TEST_TABLE_NAME")
-    dynamo_table = dynamo.Table(table_name)
+    dynamo = boto3.resource("dynamodb", endpoint_url=dynamo_endpoint)
+    dynamo_table = dynamo.Table(dynamo_table_name)
 
     item = {
         "key_id": key,
@@ -45,7 +44,7 @@ def inset_to_dynamo(key, data):
     return result
 
 
-def populate_dyanmo(event, context):
+def populate_dynamo(event, context):
     """
     :param event: aws event
     :param context:  aws context
@@ -61,7 +60,5 @@ def populate_dyanmo(event, context):
         if record.get("eventSource") == "aws:sqs" and "body" in record:
             sqs_data = json.loads(record["body"])
             # assume sqs contains s3 bucket name and key
-            data = get_s3_data(sqs_data["bucket_name"], sqs_data["key"])
-            inset_to_dynamo(sqs_data["key"], data)
-
-
+            data = get_s3_data(sqs_data["key"])
+            insert_to_dynamo(sqs_data["key"], data)
