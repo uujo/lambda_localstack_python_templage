@@ -15,7 +15,10 @@ Template for lambda  with localstack and sam integration for localtest
 
 ## getting the source code
  
-  `git clone https://github.com/uujo/lambda_localstack_python_template.git`
+  `git clone https://github.com/uujo/lambda_localstack_python_templage.git`
+  
+  `cd lambda_localstack_python_template`
+  
 
 ## Set up git hooks (pre-commit, pre-push) - This is one time setting. Doesn't have to be repeated every time. 
 
@@ -46,7 +49,8 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
   `source .venv/bin/activate`  - activate virtual environment
   
-  `pip install -r requirements.txt` - on time setting
+  `pip install -r requirements.txt` - one time setting (If this command fails with __xcun__ error, run __xcode-select --install__
+  
  
 * To start local test setup
 
