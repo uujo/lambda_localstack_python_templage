@@ -13,8 +13,11 @@ Template for lambda  with localstack and sam integration for localtest
 
 * [Docker](https://docs.docker.com/docker-for-mac/install/) - need for the local lambda function testing
 
+## getting the source code
+ 
+  `git clone https://github.com/uujo/lambda_localstack_python_template.git`
 
-## Set up git hooks (pre-commit, pre-push) - This is one time setting. Doesn't have to be repeated every time. (Warning: Hooks are properly triggered only when git command is used on the top level of the repository (nci-vasap-annotation/) currently.
+## Set up git hooks (pre-commit, pre-push) - This is one time setting. Doesn't have to be repeated every time. 
 
 This will copy the _pre-commit_, _pre-push_ files under .git/hooks
 ```
@@ -33,15 +36,11 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
 > git push origin [branch_name] --no-verify
 ```
 
-## Local test set up using aws sam and localstack (with python3 venv) - Alternative step by step instrucntion is [here](local-test-setup)
-
-* getting the source code
- 
-  `git clone https://github.com/BIAD/nci-varsap-annotation.git`
+## Local test set up using aws sam and localstack (with python3 venv) 
  
 * set the virtual environment (optional, you can use other virtual env tools or without it)
   
-  `cd nci-varsap-annotation`
+  `cd lambda_localstack_python_template`
   
   `python3 -m venv .venv`
   
