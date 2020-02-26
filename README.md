@@ -79,10 +79,10 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
 * To test lambdas
 
-  * invoke S3 ObjectCreated event
+  * invoke SQS event
   
-    `sam local invoke HandleS3Event -t build/template.yaml --docker-network lambda_localstack_template_local_aws_network -e tests/s3_test_event.json`
-  
+    `sam local invoke TestLambda -t build/template.yaml --docker-network lambda_localstack_template_local_aws_network -e tests/sqs_test_event.json`
+
   * To check whether table has an entry inserted.
 
     `aws dynamodb scan --table-name TEST_TABLE --endpoint-url http://localhost:4569`
@@ -91,13 +91,6 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
     `aws sqs receive-message --queue-url http://localhost:4576/queue/TEST_QUEUE --endpoint-url=http://localhost:4576 --max-number-of-messages=10`
   
-  * invoke SQS event
-  
-    `sam local invoke RequestAnnotation -t build/template.yaml --docker-network lambda_localstack_template_local_aws_network -e tests/sqs_test_event.json`
-    
-  * check S3 Object is updated: (Might take a while to update annotations) - It will store object in _s3_test_out.json_
-   
-    `aws s3api get-object --endpoint-url=http://localhost:4572  --bucket TEST_BUCKET --key [path_to_object]/[name_of_object].json s3_test_out.json`
   
 * To stop the local test and clean up docker
 
