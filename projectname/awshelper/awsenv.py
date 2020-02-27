@@ -37,6 +37,7 @@ def get_params_from_ssm(path_to_config=None):
     ssm = boto3.Session(region_name='us-east-1').client('ssm')
 
     param = ssm.get_parameter(Name=path_to_config, WithDecryption=True)
+    param_dict = {}
     if param and "Parameter" in param:
         param_dict = json.loads(param['Parameter']['Value'])
 
