@@ -17,7 +17,7 @@ This provides a templates for aws lambda test in local environment using localst
  
   `git clone https://github.com/BIAD/nci-aws-lambda-localstack-template.git`
   
-  `cd nci-aws-lambda-localstack-template`
+  `cd lambda-localstack-template`
   
 
 ## Set up git hooks (pre-commit, pre-push) - This is one time setting. Doesn't have to be repeated every time. 
@@ -50,7 +50,7 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
  
 * set the virtual environment (optional, you can use other virtual env tools or without it) 
   
-  `cd nci-aws-lambda-localstack-template`
+  `cd lambda-localstack-template`
   
   `python3 -m venv .venv`
   
@@ -67,18 +67,18 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
 ## Tests Examples
 
-### [Lambda with dynamo, API gateway testing (Localstack)](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/Lambda-Dynamo-Test)
+### [Lambda with dynamo, API gateway testing (Localstack)](https://github.com/uujo/lambda-localstack-template/wiki/Lambda-Dynamo-Test)
 
  
-### [Lambda with dynamo, s3, sqs testing (Localstack)](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/Lambda-S3-SQS-Dynamo-Test)
+### [Lambda with dynamo, s3, sqs testing (Localstack)](https://github.com/uujo/lambda-localstack-template/wiki/Lambda-S3-SQS-Dynamo-Test)
 
-### [Lambda with dynamo, API gateway testing (local dynamo server)](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/Lambda-Local-Dynamo-Server-Test)
+### [Lambda with dynamo, API gateway testing (local dynamo server)](https://github.com/BIAD/lambda-localstack-template/wiki/Lambda-Local-Dynamo-Server-Test)
 
 
 ## Integration Test: To be added
 
 
-## [How to use this template](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/How-to-use-this-template) 
+## [How to use this template](https://github.com/uujo/lambda-localstack-template/wiki/How-to-use-this-template) 
 
  * goal: With minimal configuation change, testing environment can be set up for different project.
  * There are two main configuration - One for localstack and one for sam. If starting and stop scrip need to be changed as well if you want to reuse the script.
