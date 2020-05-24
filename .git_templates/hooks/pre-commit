@@ -14,4 +14,4 @@ black --config ./pyproject.toml .
 
 # Run pylint and check the score
 echo "pre-commit: Running lint check"
-pylint --rcfile=./pylintrc projectname/ tests/
+pylint --rcfile=./pylintrc src/projectname tests/unittests

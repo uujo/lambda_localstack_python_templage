@@ -1,0 +1,54 @@
+dist: xenial
+language: python
+
+branches:
+  only: master
+
+sudo: true
+
+python: 3.7
+
+before_install:
+  - export AUTHOR=`git --no-pager show -s --format='%an <%ae>'`
+  - export DATE=`TZ=America/New_York date "+%m-%d-%y-%H%M"`
+  - export DATE_TM=`TZ=America/New_York date "+%m-%d-%y %H:%M"`
+  - python --version
+
+env:
+  global:
+    - AWS_DEFAULT_REGION=us-east-1
+    - PYTHONPATH=$TRAVIS_BUILD_DIR:$PYTHONPATH
+
+install:
+  - pip install awscli --upgrade
+  - pip install -r requirements-travis.txt
+  - pip install awscli --upgrade
+
+script:
+  # run tests
+  #- py.test -vv -r sxX
+  - export PYTHONPATH=$PWD/src:$PWD/tests:$PYTHONPATH
+  - BOTO_CONFIG=none pytest --cov-report xml --cov=src/projectname/ tests/unittests/
+  - coverage xml && python-codacy-coverage -r coverage.xml
+  - ls -alh
+
+  - make
+  # consult cloud engineer for set up below
+  #- mv ./dist/lambda.zip ./dist/[lamdba-name]:latest.zip
+  #- cp ./dist/[lamdba-name]:latest.zip ./dist/[lambda-name]:$DATE.zip
+  #- cp ./dist/[lamdba-name]:latest.zip ./dist/[lambda-name]:latest.zip
+  - ls -alh ./dist/
+
+
+after_success:
+
+  # consult a cloud engineer for set up below
+  #- aws s3 cp ../dist/[lamdba-name]:$DATE.zip s3://biad-lambda-hub/[ProjectName]/  --acl public-read
+  # run integration test if exists
+  #- pytest -vv ./tests/integrationtests/ || exit $?
+
+  # consult a cloud engineer for heartbeat test
+
+notifications:
+  # consult a cloud engineer for slack notification
+  #slack: clinicalbiomed:EphqNgtuf0NzIGaOE43vSFDc

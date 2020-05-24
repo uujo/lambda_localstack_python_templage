@@ -8,7 +8,7 @@
 
 # run the unittests if it fails abort the push
 echo "pre-push: Run unittest"
-coverage run --source=projectname -m pytest tests/unittests/
+coverage run --source=src/projectname -m pytest tests/unittests/
 
 # Above command doesn't exit when unittests fails
 # It needs to be caught and exit non 0 to abort the push

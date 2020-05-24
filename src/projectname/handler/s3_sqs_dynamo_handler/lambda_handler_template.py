@@ -10,15 +10,18 @@ import time
 
 import boto3
 
-from ..awshelper.awsenv import dynamo_endpoint, s3_endpoint, dynamo_table_name, s3_bucket_name
+from ...awshelper.awsenv import dynamo_endpoint, s3_endpoint, dynamo_table_name, s3_bucket_name
+
+# disable pylint warning about unused 'context' argument
+# pylint: disable=unused-argument, no-member
 
 
 def get_s3_data(key):
     """
     getting s3 data
     """
-    s3 = boto3.resource("s3", endpoint_url=s3_endpoint)
-    s3_obj = s3.Object(s3_bucket_name, key=key)
+    s3 = boto3.resource("s3", endpoint_url=s3_endpoint())
+    s3_obj = s3.Object(s3_bucket_name(), key=key)
     data = s3_obj.get(ResponseContentType="application/json")
     body = json.loads(data["Body"].read())
     return body
@@ -31,20 +34,16 @@ def insert_to_dynamo(key, data):
     :param data:
     :return:
     """
-    dynamo = boto3.resource("dynamodb", endpoint_url=dynamo_endpoint)
-    dynamo_table = dynamo.Table(dynamo_table_name)
+    dynamo = boto3.resource("dynamodb", endpoint_url=dynamo_endpoint())
+    dynamo_table = dynamo.Table(dynamo_table_name())
 
-    item = {
-        "key_id": key,
-        "data": data,
-        "created": int(time.time()),
-        "updated": int(time.time()),
-    }
+    item = {"key_id": key, "data": data, "created": int(time.time()), "last_updated": int(time.time())}
     result = dynamo_table.put_item(Item=item)
     return result
 
 
-def populate_dynamo(event, context):
+#
+def populate_dynamo_from_sqs_s3(event, context):
     """
     :param event: aws event
     :param context:  aws context

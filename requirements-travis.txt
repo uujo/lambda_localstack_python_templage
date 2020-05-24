@@ -1,0 +1,5 @@
+boto3
+codacy-coverage
+coverage
+pytest
+pytest-cov

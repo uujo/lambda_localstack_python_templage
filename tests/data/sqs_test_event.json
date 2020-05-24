@@ -1,0 +1,3 @@
+{"Records": [{"eventSource": "aws:sqs",
+              "body": "{\"key\": \"test_path/data.json\"}"
+             }]}

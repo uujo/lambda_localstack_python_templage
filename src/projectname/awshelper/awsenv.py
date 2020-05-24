@@ -1,18 +1,31 @@
 """
 This is just the somple code for accessing parameter store and secrets manager
-and how to swich local env to aws env 
+and how to swich local env to aws env
 """
 
 import os
 import json
+import logging
+
 import boto3
 
+
+EDGE_PORT = 4566
+LOCALSTACK_ENDPOINT = f"http://localstack:{EDGE_PORT}"
+
 LOCAL_TABLE_NAME = "TEST_TABLE"
-LOCAL_DYNAMO_ENDPOINT = "http://localstack:4569"
-LOCAL_BUCKET_NAME = "TEST_BUCKET"
-LOCAL_S3_ENDPOINT = "http://localstack:4572"
+LOCAL_BUCKET_NAME = "test-bucket"  # bucket name cannot contain uppercase or _.
 LOCAL_QUEUE_NAME = "TEST_QUEUE"
-LOCAL_SQS_ENDPOINT = "http://localstack:4576"
+# using local dynamo server
+LOCAL_DYNAMO_SERVER_ENDPOINT = "http://dynamodb:8000"
+
+
+def is_local_dynamo():
+    """
+    check whether local dynamodb is set up
+    """
+    # This is set on template-samp.yaml
+    return os.getenv("TEST_ENV") == "LOCAL_DYNAMO_SERVER"
 
 
 def is_local_env():
@@ -22,7 +35,8 @@ def is_local_env():
     :return:
     """
     # This is set on template-samp.yaml
-    return os.getenv("TEST_ENV") == "LOCAL"
+    logging.info(f"ENVIRONMENT: {os.getenv('TEST_ENV')}")
+    return os.getenv("TEST_ENV") == "LOCAL" or is_local_dynamo()
 
 
 def get_params_from_ssm(path_to_config=None):
@@ -37,6 +51,7 @@ def get_params_from_ssm(path_to_config=None):
     ssm = boto3.Session(region_name='us-east-1').client('ssm')
 
     param = ssm.get_parameter(Name=path_to_config, WithDecryption=True)
+    param_dict = {}
     if param and "Parameter" in param:
         param_dict = json.loads(param['Parameter']['Value'])
 
@@ -56,64 +71,63 @@ def get_params_from_secretsmanager(path_to_config=None):
     return param_dict
 
 
-@property
 def dynamo_endpoint():
     """
     returns dynamodb endpoint
     """
-    return LOCAL_DYNAMO_ENDPOINT if is_local_env() else None
+    # check local dynamo first
+    if is_local_dynamo():
+        return LOCAL_DYNAMO_SERVER_ENDPOINT
+    if is_local_env():
+        return LOCALSTACK_ENDPOINT
+    return None
 
 
-@property
 def s3_endpoint():
     """
     returns s3 endpoint
     """
-    return LOCAL_S3_ENDPOINT if is_local_env() else None
+    return LOCALSTACK_ENDPOINT if is_local_env() else None
 
 
-@property
 def sqs_endpoint():
     """
     returns sqs endpoint
     """
-    return LOCAL_SQS_ENDPOINT if is_local_env() else None
+    return LOCALSTACK_ENDPOINT if is_local_env() else None
 
 
-@property
 def dynamo_table_name():
     """
     returns table name from parameter store
     """
     if is_local_env():
         return LOCAL_TABLE_NAME
-    else:
-        # get data from parameter store with correct key
-        # table_name = get_params_from_ssm()["CORRECT_KEY"]
-        return "table_name"
+
+    # get data from parameter store with correct key
+    # table_name = get_params_from_ssm()["CORRECT_KEY"]
+    return "table_name"
 
 
-@property
 def s3_bucket_name():
     """
     returns s3 bucket name from parameter store
     """
     if is_local_env():
         return LOCAL_BUCKET_NAME
-    else:
-        # get data from parameter store with correct key
-        # bucket_name = get_params_from_ssm()["CORRECT_KEY"]
-        return "bucket_name"
+
+    # get data from parameter store with correct key
+    # bucket_name = get_params_from_ssm()["CORRECT_KEY"]
+    return "bucket_name"
 
 
-@property
 def sqs_name():
     """
     returns sqs name from parameter store
     """
     if is_local_env():
         return LOCAL_QUEUE_NAME
-    else:
-        # get data from parameter store with correct key
-        # sqs_name = get_params_from_ssm()["CORRECT_KEY"]
-        return "sqs_name"
+
+    # get data from parameter store with correct key
+    # sqs_name = get_params_from_ssm()["CORRECT_KEY"]
+    return "sqs_name"

@@ -14,28 +14,8 @@ Globals:
         TEST_ENV: LOCAL     
 
 Resources:
-  RequestAnnotation:
+  LambdaTemplateTest:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: .
-      Handler: annotation_requestor.insert_annotation
-
-  HandleS3Event:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: .
-      Handler: s3_event_handler.trigger_annotation
-
-  AnnotaionDynamoDBTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: ANNOTATION_TABLE
-      PrimaryKey:
-        Name: job_id
-        Type: String
-      AttributeDefinitions:
-        AttributeName: job_id
-        AttributeType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      Handler: projectname.handler.s3_sqs_dynamo_handler.lambda_handler_template.populate_dynamo_from_sqs_s3
