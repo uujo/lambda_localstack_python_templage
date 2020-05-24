@@ -1,0 +1,62 @@
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: python3.7
+    Timeout: 60
+    Environment:
+      Variables:
+        # Set localtest env
+        # Set environment variable so amazon service can be switched in local settings
+        # This has to be matched with localstack config in docker-compose.yaml
+        # Current example contains DynamoDB
+        TEST_ENV: LOCAL_DYNAMO_SERVER
+
+Resources:
+  PostTest:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: .
+      Handler: projectname.handler.dynamo_handler.post_handler.post
+      Events:
+        Validation:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /api/v1/testapi
+            Method: post
+
+  GetTest:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: projectname.handler.dynamo_handler.get_handler.get
+      Events:
+        Annotation:
+          Type: Api
+          Properties:
+            Path: /api/v1/testapi/{id}
+            Method: get
+
+  PutTest:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: projectname.handler.dynamo_handler.put_handler.put
+      Events:
+        Annotation:
+          Type: Api
+          Properties:
+            Path: /api/v1/testapi/{id}
+            Method: put
+
+  DeleteTest:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: projectname.handler.dynamo_handler.delete_handler.delete
+      Events:
+        Annotation:
+          Type: Api
+          Properties:
+            Path: /api/v1/testapi/{id}
+            Method: delete

@@ -1,23 +1,23 @@
-# lambda_localstack_template
-Template for lambda  with localstack and sam integration for localtest 
+# nci-aws-lambda-localstack-template
+
+This provides a templates for aws lambda test in local environment using localstack or local server instances (i.e. dynamoDB). This examples shows only fraction of the services localstack provides. The full list of services are [here](https://github.com/localstack/localstack). This template provides the basic settings for local test which can be used in different projects with minimal configuration changes. Details for the configuration changes is explained `How to use this template` section below.
 
 ## Prerequesite (on Mac)
 
 * [Python3](https://www.python.org/downloads/)
 
-* [AWS client](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) (pip3 install awscli --upgrade --user)
+* [Docker](https://docs.docker.com/docker-for-mac/install/) - need for the local lambda function testing with sam
 
-* [AWS SAM client](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html#serverless-sam-cli-install-mac-pip) (pip3 install --user aws-sam-cli)
-  
-   * Reference: [Adjust path to use sam cli command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac-path.html)
+* [AWS client](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 
-* [Docker](https://docs.docker.com/docker-for-mac/install/) - need for the local lambda function testing
+* [AWS SAM client](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html)
+ 
 
 ## getting the source code
  
-  `git clone https://github.com/uujo/lambda_localstack_template.git`
+  `git clone https://github.com/BIAD/nci-aws-lambda-localstack-template.git`
   
-  `cd lambda_localstack_template`
+  `cd nci-aws-lambda-localstack-template`
   
 
 ## Set up git hooks (pre-commit, pre-push) - This is one time setting. Doesn't have to be repeated every time. 
@@ -39,11 +39,18 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
 > git push origin [branch_name] --no-verify
 ```
 
-## Local test set up using aws sam and localstack (with python3 venv) 
+## set PYTHONPATH for unittest
+
+   `export PYTHONPATH=$PWD/src:$PWD/tests:$PYTHONPATH`
+   
+   If virtual environment is used below, you can set the above path in __.venv/bin/activate__ file
+   
+  
+## Local test set up using aws sam and localstack (with python3 venv) - virtual environment setting is optional.
  
 * set the virtual environment (optional, you can use other virtual env tools or without it) 
   
-  `cd lambda_localstack_template`
+  `cd nci-aws-lambda-localstack-template`
   
   `python3 -m venv .venv`
   
@@ -51,55 +58,31 @@ For special cases, if you still need to commit, push the code use _--no-verify_ 
   
   `pip install -r requirements.txt` - one time setting 
      (If install fails with __xcun__ error, run __xcode-select --install__)
+   
+* Now it is ready to set up the test below.
+     
+* After all the test is done. get out of virtual environment.
+
+  `deactivate`
   
+## Tests Examples
+
+### [Lambda with dynamo, API gateway testing (Localstack)](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/Lambda-Dynamo-Test)
+
  
-* To start local test setup
+### [Lambda with dynamo, s3, sqs testing (Localstack)](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/Lambda-S3-SQS-Dynamo-Test)
 
-  `./start_local_test_template.sh`   
-  
-  _-i_ option sets interactive mode on localstack instead of running it background, if you want to monitor localstack log use this option. Without this option, it automatically create the sample data in S3 bucket.
+### [Lambda with dynamo, API gateway testing (local dynamo server)](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/Lambda-Local-Dynamo-Server-Test)
 
-
-* To check the table, sqs and bucket are created (**Use this setting only if you use _-i_ option, without _-i_, these steps runs automatically**)
-  
-  `aws dynamodb list-tables --endpoint-url http://localhost:4569`
-  
-  `aws sqs list-queues --endpoint-url=http://localhost:4576`
-  
-  `aws s3api list-buckets --endpoint-url=http://localhost:4572`
-  
-  * put data in S3
-  
-    `aws s3api put-object --endpoint-url=http://localhost:4572  --bucket TEST_BUCKET --key test_path/data.json --body tests/s3_test_data.json`
-
-  * To check S3 object is created
-
-    `aws s3api list-objects --bucket=TEST_BUCKET --endpoint-url=http://localhost:4572` 
-  
-  
-* To test lambdas
-
-  * invoke SQS event
-  
-    `sam local invoke TestLambda -t build/template.yaml --docker-network lambda_localstack_template_local_aws_network -e tests/sqs_test_event.json`
-
-  * To check whether table has an entry inserted.
-
-    `aws dynamodb scan --table-name TEST_TABLE --endpoint-url http://localhost:4569`
-  
-  * To check sqs messge is queued
-  
-    `aws sqs receive-message --queue-url http://localhost:4576/queue/TEST_QUEUE --endpoint-url=http://localhost:4576 --max-number-of-messages=10`
-  
-  
-* To stop the local test and clean up docker
-
-  `./stop_local_test_template.sh`
-    
 
 ## Integration Test: To be added
 
- 
+
+## [How to use this template](https://github.com/BIAD/nci-aws-lambda-localstack-template/wiki/How-to-use-this-template) 
+
+ * goal: With minimal configuation change, testing environment can be set up for different project.
+ * There are two main configuration - One for localstack and one for sam. If starting and stop scrip need to be changed as well if you want to reuse the script.
+
 ## Reference
 * [AWS SAM guick start guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-quick-start.html)
 * [SAM template](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md)
